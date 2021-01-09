@@ -3,5 +3,5 @@ from .views import BenefitView
 
 
 urlpatterns = [
-    path('benefits', BenefitView.as_view()),
+    path('benefits', BenefitView.as_view({'get':'list', 'post':'create'})),
 ]
