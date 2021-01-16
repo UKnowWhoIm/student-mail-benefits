@@ -5,4 +5,4 @@ from .models import Benefit
 class BenefitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Benefit
-        fields = ('id', 'title', 'description', 'category', 'link', 'img_file', 'is_verified')
+        fields = '__all__'
