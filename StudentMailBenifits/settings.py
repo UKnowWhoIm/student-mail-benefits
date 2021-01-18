@@ -10,8 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import dotenv
+import dj_database_url
 from pathlib import Path
-import django_heroku
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", '!bjum_ph83_@a@17v1^0r+7mx^xd*o-rl0t1#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "True") != "False"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [".herokuapp.com"]
 
 
 # Application definition
@@ -82,14 +82,6 @@ WSGI_APPLICATION = 'StudentMailBenifits.wsgi.application'
 
 # POSTGRES Setup
 DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL')
-    )
-}
-
-"""
-DATABASES = {
-    
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ.get("DATABASE_NAME"),
@@ -99,6 +91,9 @@ DATABASES = {
         'PORT': os.environ.get("DATABASE_PORT"),
     }
 }
+
+"""
+
 # Uncomment to use SQLITE db
 DATABASES = {
     'default': {
@@ -108,6 +103,8 @@ DATABASES = {
 }
 """
 
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
 
 
 # Password validation
@@ -147,4 +144,3 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-django_heroku.settings(locals())
