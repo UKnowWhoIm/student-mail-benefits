@@ -16,10 +16,13 @@ An Open API containing all information regarding student licenses for popular pr
 | /benefits/ | GET |  [Get All Benefits](#get-all-benefits) |
 | /benefits/ | POST | [Create a benefit](#fetch-benefit-by-pk) |
 | /benefits/&lt;PK&gt;/ | GET | [Fetch Benefit By PK](#create-a-benefit) |
+| /category/ | GET | [Get all categories](#get-all-categories) |
+| /category/&lt;PK&gt; | GET | [Fetch Category by PK](#fetch-category-by-pk) |
 
 ##### Get All Benefits
 
-Get all the verified benefits stored in this API
+Get all the verified benefits stored in this API.<br/>
+To filter by category, pass category=&lt;category_id&gt; as a GET parameter
 
 ##### Fetch Benefit By PK
 
@@ -37,4 +40,11 @@ Contribute to this collection by adding an unlisted benefit
 | category | Integer | No |
 | img_link | String | No |
 
+##### Get all Categories
+
+Get all the categories.
+
+##### Fetch Category by PK
+
+Fetch a category by it's PK
 

@@ -1,7 +1,7 @@
 from rest_framework.permissions import IsAdminUser, SAFE_METHODS
 
 
-class UpdateBenefit(IsAdminUser):
+class IsAdminOrSafe(IsAdminUser):
     def has_permission(self, request, view):
         return True
 
