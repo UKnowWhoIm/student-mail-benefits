@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import dotenv
+import dj_database_url
 from pathlib import Path
 import os
 
@@ -27,7 +28,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", '!bjum_ph83_@a@17v1^0r+7mx^xd*o-rl0t1#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "True") != "False"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [".herokuapp.com", "localhost", "127.0.0.1"]
 
 
 # Application definition
@@ -48,10 +49,12 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'StudentMailBenifits.urls'
@@ -90,6 +93,7 @@ DATABASES = {
         'PORT': os.environ.get("DATABASE_PORT"),
     }
 }
+
 """
 # Uncomment to use SQLITE db
 DATABASES = {
@@ -100,6 +104,9 @@ DATABASES = {
 }
 """
 
+if not os.environ.get("DATABASE_NAME"):
+    db_from_env = dj_database_url.config(conn_max_age=500)
+    DATABASES['default'].update(db_from_env)
 
 
 # Password validation
@@ -139,3 +146,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
