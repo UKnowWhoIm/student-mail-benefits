@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class BenifitsConfig(AppConfig):
+class BenefitsConfig(AppConfig):
     name = 'benefits'

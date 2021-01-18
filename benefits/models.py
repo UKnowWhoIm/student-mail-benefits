@@ -13,7 +13,7 @@ class Benefit(models.Model):
     description = models.CharField(max_length=300)
     category = models.ForeignKey(Category, related_name="benefits", on_delete=models.SET_NULL, null=True)
     link = models.CharField(max_length=100)
-    img_file = models.CharField(max_length=2048)
+    img_file = models.CharField(max_length=2048, blank=True)
     is_verified = models.BooleanField(default=False)
 
     def __str__(self):

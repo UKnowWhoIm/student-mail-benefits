@@ -5,4 +5,4 @@ from .models import Benefit
 class BenefitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Benefit
-        fields = '__all__'
+        exclude = ["is_verified"]
