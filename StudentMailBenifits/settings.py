@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import dotenv
 from pathlib import Path
+import django_heroku
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -81,6 +82,14 @@ WSGI_APPLICATION = 'StudentMailBenifits.wsgi.application'
 
 # POSTGRES Setup
 DATABASES = {
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
+}
+
+"""
+DATABASES = {
+    
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ.get("DATABASE_NAME"),
@@ -90,7 +99,6 @@ DATABASES = {
         'PORT': os.environ.get("DATABASE_PORT"),
     }
 }
-"""
 # Uncomment to use SQLITE db
 DATABASES = {
     'default': {
@@ -139,3 +147,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+django_heroku.settings(locals())
