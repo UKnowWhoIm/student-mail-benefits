@@ -18,6 +18,19 @@ An Open API containing all information regarding student licenses for popular pr
 | /category/ | GET | [Get all categories](#get-all-categories) |
 | /category/&lt;PK&gt; | GET | [Fetch Category by PK](#fetch-category-by-pk) |
 
+### Benefit Data
+
+| Arguments | Type | Details |
+| ----- | ----- | ----- | 
+| id | Integer | Primary Key | 
+| title | String | Title of the benefit | 
+| description | String | A small description of the benefit |
+| link | String | Link to the website of the benefit |
+| category | Integer | The category of the benefit |
+| img_link | String | The link to the image of the benefit |
+| highlights | JSON String | JSON List of Strings containing important features of the benefit |
+
+
 ### Get All Benefits
 
 Get all the verified benefits stored in this API.<br/>
