@@ -38,6 +38,7 @@ Contribute to this collection by adding an unlisted benefit
 | link | String | Yes |
 | category | Integer | No |
 | img_link | String | No |
+| highlights | JSON String | No |
 
 **NOTE**: Your contribution will be listed only after verification by community members.
 
