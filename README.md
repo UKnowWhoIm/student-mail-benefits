@@ -13,8 +13,8 @@ An Open API containing all information regarding student licenses for popular pr
 | Route | Method | Function |
 | ----- | ----- | ----- |
 | /benefits/ | GET |  [Get All Benefits](#get-all-benefits) |
-| /benefits/ | POST | [Create a benefit](#fetch-benefit-by-pk) |
-| /benefits/&lt;PK&gt;/ | GET | [Fetch Benefit By PK](#create-a-benefit) |
+| /benefits/ | POST | [Create a benefit](#create-a-benefit) |
+| /benefits/&lt;PK&gt;/ | GET | [Fetch Benefit By PK](#fetch-benefit-by-pk) |
 | /category/ | GET | [Get all categories](#get-all-categories) |
 | /category/&lt;PK&gt; | GET | [Fetch Category by PK](#fetch-category-by-pk) |
 
@@ -38,6 +38,7 @@ Contribute to this collection by adding an unlisted benefit
 | link | String | Yes |
 | category | Integer | No |
 | img_link | String | No |
+| highlights | JSON String | No |
 
 **NOTE**: Your contribution will be listed only after verification by community members.
 
