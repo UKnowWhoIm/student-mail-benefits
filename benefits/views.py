@@ -7,7 +7,7 @@ from .models import Benefit, Category
 
 
 class BenefitView(viewsets.ModelViewSet):
-    queryset = Benefit.objects.filter(is_verified=True)
+    queryset = Benefit.objects.all()
     permission_classes = [IsAdminOrSafe]
     serializer_class = BenefitSerializer
     filter_backends = (filters.DjangoFilterBackend,)
