@@ -19,26 +19,18 @@ class BenefitSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        approved = False
-        if self.context["request"].user:
-            # Approve changes if staff user is logged in
-            approved = self.context["request"].user.is_staff
         Contribution.objects.create(
             email=validated_data.get("email"),
             contribution=self.clean(validated_data),
-            approved=approved
+            approved=self.context["request"].user.is_staff
         )
 
     def update(self, instance, validated_data):
-        approved = False
-        if self.context["request"].user:
-            # Approve changes if staff user is logged in
-            approved = self.context["request"].user.is_staff
         Contribution.objects.create(
             email=validated_data.get("email"),
             contribution=self.clean(validated_data),
             benefit=self.instance,
-            approved=approved
+            approved=self.context["request"].user.is_staff
         )
 
     def save(self, **kwargs):
@@ -53,6 +45,11 @@ class BenefitSerializer(serializers.ModelSerializer):
         if type(value) != list:
             raise serializers.ValidationError("Highlights must Be JSON list")
         return value
+
+    def validate_email(self, _):
+        # Add email if staff user
+        if self.context["request"].user.is_staff:
+            return self.context["request"].user.email
 
 
 class CategorySerializer(serializers.ModelSerializer):

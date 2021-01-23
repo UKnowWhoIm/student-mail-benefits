@@ -1,3 +1,5 @@
+import json
+
 from django.db import models
 
 
@@ -25,8 +27,10 @@ class Benefit(models.Model):
 
 
 class Contribution(models.Model):
-    email = models.EmailField(null=True)
+    email = models.EmailField(null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     contribution = models.JSONField()
     benefit = models.ForeignKey(Benefit, on_delete=models.SET_NULL, null=True, rel="contributions", blank=True)
     approved = models.BooleanField(default=False)
+
+
