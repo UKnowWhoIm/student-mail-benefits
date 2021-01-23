@@ -4,6 +4,9 @@ from django.db import models
 
 
 class Category(models.Model):
+    class Meta:
+        verbose_name_plural = "categories"
+
     name = models.CharField(max_length=20)
 
     def __str__(self):
@@ -32,5 +35,11 @@ class Contribution(models.Model):
     contribution = models.JSONField()
     benefit = models.ForeignKey(Benefit, on_delete=models.SET_NULL, null=True, rel="contributions", blank=True)
     approved = models.BooleanField(default=False)
+
+    def __str__(self):
+        if self.benefit:
+            return self.benefit.title
+        return self.contribution["title"]
+
 
 

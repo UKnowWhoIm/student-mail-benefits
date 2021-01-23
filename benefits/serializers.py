@@ -1,18 +1,33 @@
-import json
-
 from rest_framework import serializers
 from .models import Benefit, Category, Contribution
 
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = "__all__"
+
+
 class BenefitSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(write_only=True, required=False, default=None)
 
     class Meta:
         model = Benefit
         fields = "__all__"
 
+
+class BenefitReadSerializer(BenefitSerializer):
+    class Meta:
+        model = Benefit
+        fields = "__all__"
+        depth = 1
+
+
+class BenefitWriteSerializer(BenefitSerializer):
+    email = serializers.EmailField(write_only=True, required=False, default=None)
+
     @staticmethod
     def clean(data):
+        # Remove email and set category to id
         data = {key: val for key, val in data.items() if key != "email"}
         if data.get("category"):
             data["category"] = data["category"].id
@@ -46,13 +61,9 @@ class BenefitSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Highlights must Be JSON list")
         return value
 
-    def validate_email(self, _):
+    def validate_email(self, value):
         # Add email if staff user
         if self.context["request"].user.is_staff:
             return self.context["request"].user.email
+        return value
 
-
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = "__all__"
