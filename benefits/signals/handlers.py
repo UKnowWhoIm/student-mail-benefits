@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from benefits.models import Contribution, Benefit, Category
-from benefits.utils import check_promotion
+from users.utils import check_promotion
 
 
 @receiver(post_save, sender=Contribution)

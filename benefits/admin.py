@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Benefit, Category, Contribution, MailList
+from .models import Benefit, Category, Contribution
 
 
 class BenefitAdmin(admin.ModelAdmin):
@@ -9,4 +9,4 @@ class BenefitAdmin(admin.ModelAdmin):
 admin.site.register(Benefit, BenefitAdmin)
 admin.site.register(Category)
 admin.site.register(Contribution)
-admin.site.register(MailList)
+

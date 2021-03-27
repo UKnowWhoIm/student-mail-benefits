@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from benefits.models import MailList
+from .models import MailList
 from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from .forms import CreateUserForm
 from .utils import setup_new_user

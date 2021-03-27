@@ -35,6 +35,7 @@ ALLOWED_HOSTS = [".herokuapp.com", "localhost", "127.0.0.1"]
 
 INSTALLED_APPS = [
     'benefits',
+    'users',
     'rest_framework',
     'django_filters',
     'django.contrib.admin',
