@@ -1,6 +1,8 @@
 import os
 from django.contrib.auth.models import User
+from django.template.loader import render_to_string
 from django.utils.datetime_safe import datetime
+
 from .email import send_email_to_recipient
 from .models import MailList
 
@@ -21,19 +23,11 @@ def invite_as_staff(email, mail_list_data):
     this_data.setup()
     link = "http://%s/users/add_user?token=%s" % (os.environ.get("HOST", "localhost:8000"), this_data.token)
     subject = "Invitation to maintain student benefits"
-    body = """
-        <h3>You are a valuable member of this community. We invite you as a maintainer to student benefits</h3>.\n
-        As a maintainer, 
-        \t - All your contributions are automatically verified.
-        \t - You can review other contributions made by the community.
-        
-        <a href=\'%s\'>Click Here</a> to become a maintainer.
-        Copy paste this url to your browser if this doesn't work: %s 
-    """ % (link, link)
+    html_body = render_to_string("email/invite_as_maintainer.html", {'link': link})
     try:
         send_email_to_recipient(
             subject=subject,
-            message=body,
+            message=html_body,
             recipient=email,
             fail_silently=False
         )
