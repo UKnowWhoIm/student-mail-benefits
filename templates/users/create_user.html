@@ -27,6 +27,7 @@
     {% endfor %}
     {% endif %}
     <form method="post" action="{%url 'create_user'%}">
+        <div><label for="email">Email</label>: <input type="text" value="{{ email }}" disabled/><br/></div>
         {{ form }}
         {% csrf_token %}
         <input type="hidden" value="{{ token }}" name="token"/>
