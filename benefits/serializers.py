@@ -41,6 +41,13 @@ class BenefitWriteSerializer(BenefitSerializer):
         )
 
     def update(self, instance, validated_data):
+
+        # Check for changes
+        fields = [_.name for _ in Benefit._meta.fields]
+        common_keys = set(fields).intersection(set(validated_data.keys()))
+        if all([getattr(instance, key) == validated_data[key] for key in common_keys]):
+            raise serializers.ValidationError("There are no new changes")
+
         Contribution.objects.create(
             email=validated_data.get("email"),
             contribution=self.clean(validated_data),
