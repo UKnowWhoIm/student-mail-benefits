@@ -1,3 +1,8 @@
+import os
+
+from django.contrib.auth.hashers import make_password, get_hasher
+
+
 def to_hex(string):
     output = ""
     for char in string:
@@ -7,4 +12,5 @@ def to_hex(string):
 
 def hash_function(string):
     # TODO Use a secure hash
-    return to_hex(string)
+    hasher = get_hasher()
+    return to_hex(hasher.encode(string, os.environ.get("HASH_TOKEN_SALT", "")))
