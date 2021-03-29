@@ -43,7 +43,7 @@ def invite_as_staff(mail_data):
 def check_promotion(count, email):
     diff = 2 * 24 * 60 * 60  # 2 days
     mail_data = MailList.objects.filter(email=email)
-    if mail_data and (datetime.now() - mail_data[0].last_sent_time).total_seconds() >= diff or not mail_data:
+    if mail_data and (timezone.now() - mail_data[0].last_sent_time).total_seconds() >= diff or not mail_data:
         if not User.objects.filter(username=email, is_staff=True) and count >= get_min_contributions():
             if mail_data:
                 mail_data.delete()
