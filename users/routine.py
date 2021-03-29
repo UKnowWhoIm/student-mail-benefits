@@ -1,4 +1,3 @@
-# TODO Implement a routine to be executed daily, inviting users asynchronously, and delete old invites
 from datetime import timedelta
 from django.utils.datetime_safe import datetime
 from .models import MailList

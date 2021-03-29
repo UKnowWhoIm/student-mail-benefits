@@ -1,7 +1,7 @@
 import os
 from django.contrib.auth.models import User, Group
 from django.template.loader import render_to_string
-from django.utils.datetime_safe import datetime
+from django.utils import timezone
 from commons.email import send_email_to_recipient
 from .models import MailList
 
@@ -14,8 +14,8 @@ def setup_new_user(instance, email):
 
 
 def get_min_contributions():
-    return 2  # 10
-    # TODO make this a function of number of staff users
+    count = len(User.objects.filter(is_staff=True, is_active=True))
+    return max(int(1.3 ** count), 10)
 
 
 def invite_as_staff(mail_data):
@@ -32,7 +32,7 @@ def invite_as_staff(mail_data):
             recipient=email,
             fail_silently=False
         )
-        mail_data.last_sent_time = datetime.now()
+        mail_data.last_sent_time = timezone.now()
         mail_data.mail_sent = True
         mail_data.save()
     except Exception as e:

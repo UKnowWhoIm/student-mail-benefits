@@ -12,7 +12,6 @@ class MailList(models.Model):
 
     def setup(self):
         self.last_sent_time = datetime.now()
-        # TODO hash token
         chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_."
         # Make token unique
         all_tokens = [i.token for i in MailList.objects.all()]
