@@ -1,16 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Create User</title>
-    <style>
+{% extends "base.html" %}
+{% block style %}
         .helptext{
             display: none;
         }
-
-    </style>
-</head>
-<body>
+{% endblock %}
+{% block title %}Create User{% endblock %}
+{% block body %}
     <h2>Become a maintainer</h2>
     {% if form.errors %}
     {% for field in form %}
@@ -33,5 +28,4 @@
         <input type="hidden" value="{{ token }}" name="token"/>
         <br/><input type="submit" value="Submit">
     </form>
-</body>
-</html>
+{% endblock %}

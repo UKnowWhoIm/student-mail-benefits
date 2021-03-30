@@ -1,10 +1,152 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>New Benefit</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Add a new benefit{% endblock %}
+{% block script %}
+    <script
+          src="https://code.jquery.com/jquery-3.6.0.min.js"
+          integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+          crossorigin="anonymous"></script>
+    <script>
+        const newHighlightHTML = "<li class=\"highlight-wrap\"><input autocomplete=\"off\" placeholder=\"Highlight\" type=\"text\" class=\"highlight\"><span class=\"delete-highlight\">&#x2715;</span></li>";
 
-</body>
-</html>
+        function getInputData(){
+            const names = ["email", "title", "link", "img_file", "category"];
+            let data = {}
+            names.forEach((name) => data[name] = $("#"+name).val());
+            return data;
+        }
+        $(document).ready(function (){
+
+            function getHighlights(){
+                let highlights = [];
+                $(".highlight").each(function (i, obj){
+                    if(obj.value !== "")
+                        highlights.push(obj.value);
+                });
+                return highlights;
+            }
+
+            $("#new-highlight").click(function (){
+                let highlightDom = $(".highlight");
+                let lastHighlight = highlightDom[highlightDom.length - 1];
+                $(newHighlightHTML).insertAfter($(lastHighlight));
+            });
+
+            $("#submit").click(function (){
+                let highlightJSON = getHighlights();
+
+                let data = getInputData();
+                data["highlights"] = highlightJSON;
+                data["description"] = $("#description").val();
+                console.log(JSON.stringify(data));
+                $.post("/api/benefits/", data, function (response){
+                    alert(response);
+                });
+            });
+
+            $("#highlights").delegate(".delete-highlight", "click", function (){
+                let highlights = $(".highlight-wrap");
+                if(highlights.length > 2)
+                    highlights[highlights.length - 1].remove();
+                console.log(highlights.length);
+            });
+
+            $(".help").click(function (){
+                let i=0;
+                for(; this.classList[i] === "help"; i++){}
+
+                $("#help-"+this.classList[i]).toggleClass("help-text");
+            });
+        })
+
+    </script>
+{% endblock %}
+{% block style %}
+    <style>
+        .form-group{
+            padding: 10px 0;
+        }
+
+        #highlights input{
+            margin-bottom: 5px;
+        }
+
+        .delete-highlight{
+            padding-left: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .delete-highlight:hover{
+            color: #dc3545;
+        }
+        .help{
+            font-size: 14px;
+            color: aquamarine;
+            cursor: pointer;
+        }
+        ul{
+            list-style-type: none;
+        }
+        .help-text{
+            display: none;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    {% include "topbar.html" %}
+    <h1>Create a new benefit</h1>
+    <div id="main-content">
+        <div class="form-group">
+            <label for="email"><input autocomplete="off" title="email" value="{{ user.email }}" placeholder="Email" type="email" id="email"
+            {% if user.is_authenticated %}
+                  disabled
+            {% endif %}
+            ></label>
+            <span class="help email">Why?</span>
+            <div id="help-email" class="help-text">
+                <p>
+                    If your contribution is approved, your reputation will grow and you can potentially become a maintainer.
+                    But if you aren't interested in becoming a maintainer, You can leave this field blank.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="title"><input autocomplete="off" placeholder="Title" type="text" id="title" required></label>
+        </div>
+        <div class="form-group">
+            <h3>Description</h3>
+            <textarea id="description" autocomplete="off" required rows="5" cols="30"></textarea>
+        </div>
+        <div class="form-group">
+           <h3>Highlights <span class="help highlights">?</span></h3>
+                <div class="help-text" id="help-highlights">
+                    <p>
+                        Highlights are the most important points, Eg: Percentage of Discount, Attractive Benefits etc.
+                    </p>
+                </div>
+                <ul id="highlights">
+                    <li class="highlight-wrap"><input autocomplete="off" placeholder="Highlight" type="text" class="highlight"></li>
+                    <li class="highlight-wrap"><input autocomplete="off" placeholder="Highlight" type="text" class="highlight"></li>
+                </ul>
+                <button class="btn btn-sm btn-red" id="new-highlight">New Highlight</button>
+        </div>
+        <div class="form-group">
+            <label for="category">
+                <select id="category"  autocomplete="off"  >
+                    <option selected>Choose Category</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+
+                </select>
+            </label>
+        </div>
+        <div class="form-group">
+            <label for="link"><input autocomplete="off" placeholder="Link" type="text" id="link" required></label>
+        </div>
+        <div class="form-group">
+            <label for="img_file"><input autocomplete="off" placeholder="Image Link" type="text" id="img_file"></label>
+        </div>
+        <button class="btn btn-light" id="submit">Submit</button>
+
+    </div>
+{% endblock %}

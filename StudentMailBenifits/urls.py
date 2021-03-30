@@ -19,7 +19,8 @@ from .home_view import home_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("api/", include("benefits.urls")),
+    path("api/", include("benefits.api_urls")),
+    path("benefits/", include("benefits.web_urls")),
     path("users/", include("users.urls")),
     path("", home_view)
 ]
