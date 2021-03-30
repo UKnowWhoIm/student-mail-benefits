@@ -1,7 +1,6 @@
 from rest_framework import viewsets
 from rest_framework import mixins
 from rest_framework.permissions import SAFE_METHODS
-
 from .permissions import IsAdminOrSafe
 from django_filters import rest_framework as filters
 from .serializers import CategorySerializer, BenefitReadSerializer, BenefitWriteSerializer
