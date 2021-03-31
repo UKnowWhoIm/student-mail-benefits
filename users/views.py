@@ -3,7 +3,7 @@ from commons.utils import hash_function
 from .models import MailList
 from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from .forms import CreateUserForm
-from .utils import setup_new_user
+from .utils import pre_save_setup_new_user, post_save_setup_new_user
 
 
 def create_user(request):
@@ -13,7 +13,8 @@ def create_user(request):
         if record:
             record = record[0]
             form = CreateUserForm(email=record.email)
-            return render(request, "users/create_user.html", {"token": token, "form": form, "email": record.email})
+            return render(request, "users/create_user.html", {"token": request.GET["token"],
+                                                              "form": form, "email": record.email})
         return HttpResponseForbidden()
     elif request.method == "POST":
         token = hash_function(request.POST.get("token", ""))
@@ -22,8 +23,9 @@ def create_user(request):
             email = record[0].email
             form = CreateUserForm(data=request.POST)
             if form.is_valid():
-                setup_new_user(form.instance, email)
+                pre_save_setup_new_user(form.instance, email)
                 form.save()
+                post_save_setup_new_user(form.instance)
                 record.delete()
                 return render(request, "users/create_user_success.html", {"email": email})
             return render(request, "users/create_user.html", {"token": token, "form": form, "email": record.email})

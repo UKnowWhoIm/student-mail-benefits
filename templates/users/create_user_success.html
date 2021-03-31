@@ -1,9 +1,23 @@
 {% extends "base.html" %}
 {% block title %}Congrats{% endblock %}
+{% block additional_head %}
+    <style>
+        body{
+            font-size: 32px;
+            padding: 10px;
+            overflow: hidden;
+            text-align: center;
+        }
+        h1{
+            font-size: 72px;
+        }
+    </style>
+{% endblock %}
 {% block body %}
-    Congrats {{ email }}, you've become a maintainer for Student Benefits,
+    <h1>Congratulations</h1>
+        {{ email }}, you've become a maintainer for Student Benefits,
     <ul>
         <li>Now all your contributions are automatically approved</li>
-        <li>You can approve/reject other contributions</li>
+        <li>You can review other contributions</li>
     </ul>
 {% endblock %}

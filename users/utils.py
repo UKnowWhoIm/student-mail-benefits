@@ -6,10 +6,13 @@ from commons.email import send_email_to_recipient
 from .models import MailList
 
 
-def setup_new_user(instance, email):
-    maintainer_group = Group.objects.get(name='maintainer')
+def pre_save_setup_new_user(instance, email):
     instance.email = instance.username = email
     instance.is_staff = True
+
+
+def post_save_setup_new_user(instance):
+    maintainer_group = Group.objects.get(name='maintainer')
     instance.groups.add(maintainer_group)
 
 
