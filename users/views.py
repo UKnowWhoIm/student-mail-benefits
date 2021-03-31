@@ -9,7 +9,6 @@ from .utils import setup_new_user
 def create_user(request):
     if request.method == "GET":
         token = hash_function(request.GET.get("token", ""))
-        print(token)
         record = MailList.objects.filter(token=token)
         if record:
             record = record[0]

@@ -5,9 +5,8 @@
     <link href="{% static 'styles.css' %}"  rel="stylesheet"/>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@300&display=swap" rel="stylesheet">
-    {% block script %}{% endblock %}
-    {% block style %}{% endblock %}
     <title>{% block title %}{% endblock %}</title>
+    {% block additional_head %}{% endblock %}
 </head>
 <body>
     {% block body %}

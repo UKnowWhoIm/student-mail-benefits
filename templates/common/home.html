@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}Welcome to Student Benefits API{% endblock %}
-{% block style %}
+{% block additional_head %}
     <style>
         h1{
             font-size: 64px;
@@ -30,6 +30,7 @@
             <div id="buttons">
                 <button type="button" onclick="window.location='/api/benefits/'" class="btn btn-red">Browse API</button>
                 <button type="button" onclick="window.location='/benefits/new'" class="btn btn-light">Add a new benefit</button>
+                <button type="button" onclick="window.location='/benefits/edit'" class="btn btn-light">Edit a benefit</button>
             </div>
         </div>
     </div>

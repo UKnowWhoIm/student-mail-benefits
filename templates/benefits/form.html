@@ -1,12 +1,31 @@
 {% extends "base.html" %}
 {% block title %}Add a new benefit{% endblock %}
-{% block script %}
+{% block additional_head %}
     <script
           src="https://code.jquery.com/jquery-3.6.0.min.js"
           integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
           crossorigin="anonymous"></script>
     <script>
         const newHighlightHTML = "<li class=\"highlight-wrap\"><input autocomplete=\"off\" placeholder=\"Highlight\" type=\"text\" class=\"highlight\"><span class=\"delete-highlight\">&#x2715;</span></li>";
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+
 
         function getInputData(){
             const names = ["email", "title", "link", "img_file", "category"];
@@ -25,7 +44,9 @@
         }
 
         function setErrors(errors){
-            console.log(errors);
+            $(".errors").html("");
+            if(Array.isArray(errors))
+                $("#error-detail").html(errors);
             for(errorField of Object.keys(errors)){
                 $("#error-"+errorField).html(errors[errorField]);
             }
@@ -34,7 +55,7 @@
         $(document).ready(function (){
 
             $("#new-highlight").click(function (){
-                let highlightDom = $(".highlight");
+                let highlightDom = $(".highlight-wrap");
                 let lastHighlight = highlightDom[highlightDom.length - 1];
                 $(newHighlightHTML).insertAfter($(lastHighlight));
             });
@@ -43,16 +64,31 @@
                 let highlightJSON = getHighlights();
 
                 let data = getInputData();
-                data["highlights"] = highlightJSON;
+                data["highlights"] = JSON.stringify(highlightJSON);
                 data["description"] = $("#description").val();
-                $.post("/api/benefits/", data)
-                .done(() => {alert("Successfully Submitted");location.reload()})
-                .fail((response) => setErrors(response.responseJSON));
+                console.log(data);
+                {% if benefit %}
+                    let url = "/api/benefits/{{ benefit.id }}/";
+                    let type = "PUT";
+                {% else %}
+                    let url = "/api/benefits/";
+                    let type = "POST";
+                {% endif %}
+                $.ajax({
+                    headers: {
+                        "X-CSRFToken": csrftoken
+                    },
+                    url: url,
+                    type: type,
+                    data: data,
+                    success: () => {alert("Successfully Submitted");location.reload()},
+                    error: (response) => {setErrors(response.responseJSON)}
+                })
             });
 
             $("#highlights").delegate(".delete-highlight", "click", function (){
                 let highlights = $(".highlight-wrap");
-                if(highlights.length > 2)
+                if(highlights.length > 1)
                     highlights[highlights.length - 1].remove();
             });
 
@@ -65,8 +101,6 @@
         })
 
     </script>
-{% endblock %}
-{% block style %}
     <style>
         .form-group{
             padding: 10px 0;
@@ -94,9 +128,6 @@
             color: aquamarine;
             cursor: pointer;
         }
-        ul{
-            list-style-type: none;
-        }
         .help-text{
             display: none;
         }
@@ -104,8 +135,13 @@
 {% endblock %}
 {% block body %}
     {% include "topbar.html" %}
-    <h1>Create a new benefit</h1>
+    {% if benefit %}
+         <h1>Edit a benefit</h1>
+    {% else %}
+        <h1>Create a new benefit</h1>
+    {% endif %}
     <div id="main-content">
+        <div class="errors" id="error-detail"></div>
         <div class="form-group">
             <input autocomplete="off" title="email" value="{{ user.email }}" placeholder="Email" type="email" id="email"
             {% if user.is_authenticated %}
@@ -122,12 +158,12 @@
             </div>
         </div>
         <div class="form-group">
-            <input autocomplete="off" placeholder="Title" type="text" id="title" required>
+            <input autocomplete="off" placeholder="Title" type="text" value="{{ benefit.title }}" id="title" required>
             <div id="error-title" class="errors"></div>
         </div>
         <div class="form-group">
             <h3>Description</h3>
-            <textarea id="description" autocomplete="off" required rows="5" cols="30"></textarea>
+            <textarea id="description" autocomplete="off" required rows="5" cols="30">{{ benefit.description }}</textarea>
             <div id="error-description" class="errors"></div>
         </div>
         <div class="form-group">
@@ -139,8 +175,15 @@
                     </p>
                 </div>
                 <ul id="highlights">
-                    <li class="highlight-wrap"><input autocomplete="off" placeholder="Highlight" type="text" class="highlight"></li>
-                    <li class="highlight-wrap"><input autocomplete="off" placeholder="Highlight" type="text" class="highlight"></li>
+                    {% if benefit %}
+                        {% for highlight in benefit.highlights %}
+                            <li class="highlight-wrap">
+                                <input autocomplete="off" placeholder="Highlight" type="text" value="{{ highlight }}" class="highlight">{% if forloop.counter0 > 0 %}<span class="delete-highlight">&#x2715;</span>{% endif %}
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="highlight-wrap"><input autocomplete="off" placeholder="Highlight" type="text" class="highlight"></li>
+                    {% endif %}
                 </ul>
                 <button class="btn btn-sm btn-red" id="new-highlight">New Highlight</button>
         </div>
@@ -148,17 +191,21 @@
             <select id="category" autocomplete="off"  >
                 <option selected>Choose Category</option>
                 {% for category in categories %}
-                    <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% ifequal category.id benefit.category.id%}
+                        <option value="{{ category.id }}" selected>{{ category.name }}</option>
+                    {% else %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endifequal %}
                 {% endfor %}
             </select>
             <div id="error-category" class="errors"></div>
         </div>
         <div class="form-group">
-            <input autocomplete="off" placeholder="Link" type="text" id="link" required>
+            <input autocomplete="off" placeholder="Link" value="{{ benefit.link }}" type="text" id="link" required>
             <div id="error-link" class="errors"></div>
         </div>
         <div class="form-group">
-            <input autocomplete="off" placeholder="Image Link" type="text" id="img_file">
+            <input autocomplete="off" placeholder="Image Link" value="{{ benefit.img_file }}" type="text" id="img_file">
             <div id="error-img_file" class="errors"></div>
         </div>
         <button class="btn btn-light" id="submit">Submit</button>

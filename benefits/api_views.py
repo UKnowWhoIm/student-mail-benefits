@@ -1,5 +1,5 @@
-from rest_framework import viewsets
-from rest_framework import mixins
+from rest_framework import viewsets, mixins
+from rest_framework.filters import SearchFilter
 from rest_framework.permissions import SAFE_METHODS
 from .permissions import IsAdminOrSafe
 from django_filters import rest_framework as filters
@@ -10,8 +10,9 @@ from .models import Benefit, Category
 class BenefitView(viewsets.ModelViewSet):
     queryset = Benefit.objects.all()
     permission_classes = [IsAdminOrSafe]
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (filters.DjangoFilterBackend, SearchFilter)
     filterset_fields = ["category"]
+    search_fields = ["title"]
 
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
