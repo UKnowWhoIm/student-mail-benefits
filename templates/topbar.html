@@ -1,0 +1,7 @@
+<div class="bg-light text-dark sticky-top" style="text-align: right; font-size: 20px">
+    {% if user.is_authenticated %}
+        You're logged in as {{ user.get_username }}, <a href="/admin">Admin Panel</a>
+    {% else %}
+        <a href="/admin">Maintainer Login</a>
+    {% endif %}
+</div>

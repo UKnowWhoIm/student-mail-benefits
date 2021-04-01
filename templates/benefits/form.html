@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+{% block title %}Add a new benefit{% endblock %}
+{% block additional_head %}
+    <script
+          src="https://code.jquery.com/jquery-3.6.0.min.js"
+          integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+          crossorigin="anonymous"></script>
+    <script>
+        const newHighlightHTML = "<li class=\"highlight-wrap\"><input autocomplete=\"off\" placeholder=\"Highlight\" type=\"text\" class=\"highlight\"><span class=\"delete-highlight\">&#x2715;</span></li>";
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+
+
+        function getInputData(){
+            const names = ["email", "title", "link", "img_file", "category"];
+            let data = {}
+            names.forEach((name) => data[name] = $("#"+name).val());
+            return data;
+        }
+
+        function getHighlights(){
+            let highlights = [];
+            $(".highlight").each(function (i, obj){
+                if(obj.value !== "")
+                    highlights.push(obj.value);
+            });
+            return highlights;
+        }
+
+        function setErrors(errors){
+            $(".errors").html("");
+            if(Array.isArray(errors))
+                $("#error-detail").html(errors);
+            for(errorField of Object.keys(errors)){
+                $("#error-"+errorField).html(errors[errorField]);
+            }
+        }
+
+        $(document).ready(function (){
+
+            $("#new-highlight").click(function (){
+                let highlightDom = $(".highlight-wrap");
+                let lastHighlight = highlightDom[highlightDom.length - 1];
+                $(newHighlightHTML).insertAfter($(lastHighlight));
+            });
+
+            $("#submit").click(function (){
+                let highlightJSON = getHighlights();
+
+                let data = getInputData();
+                data["highlights"] = JSON.stringify(highlightJSON);
+                data["description"] = $("#description").val();
+                console.log(data);
+                {% if benefit %}
+                    let url = "/api/benefits/{{ benefit.id }}/";
+                    let type = "PUT";
+                {% else %}
+                    let url = "/api/benefits/";
+                    let type = "POST";
+                {% endif %}
+                $.ajax({
+                    headers: {
+                        "X-CSRFToken": csrftoken
+                    },
+                    url: url,
+                    type: type,
+                    data: data,
+                    success: () => {alert("Successfully Submitted");location.reload()},
+                    error: (response) => {setErrors(response.responseJSON)}
+                })
+            });
+
+            $("#highlights").delegate(".delete-highlight", "click", function (){
+                let highlights = $(".highlight-wrap");
+                if(highlights.length > 1)
+                    highlights[highlights.length - 1].remove();
+            });
+
+            $(".help").click(function (){
+                let i=0;
+                for(; this.classList[i] === "help"; i++){}
+
+                $("#help-"+this.classList[i]).toggleClass("help-text");
+            });
+        })
+
+    </script>
+    <style>
+        .form-group{
+            padding: 10px 0;
+        }
+
+        #highlights input{
+            margin-bottom: 5px;
+        }
+
+        .errors{
+            padding: 4px;
+            color: orangered;
+        }
+
+        .delete-highlight{
+            padding-left: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .delete-highlight:hover{
+            color: #dc3545;
+        }
+        .help{
+            font-size: 14px;
+            color: aquamarine;
+            cursor: pointer;
+        }
+        .help-text{
+            display: none;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    {% include "topbar.html" %}
+    {% if benefit %}
+         <h1>Edit a benefit</h1>
+    {% else %}
+        <h1>Create a new benefit</h1>
+    {% endif %}
+    <div id="main-content">
+        <div class="errors" id="error-detail"></div>
+        <div class="form-group">
+            <input autocomplete="off" title="email" value="{{ user.email }}" placeholder="Email" type="email" id="email"
+            {% if user.is_authenticated %}
+                  disabled
+            {% endif %}
+            >
+            <span class="help email">Why?</span>
+            <div id="error-email" class="errors"></div>
+            <div id="help-email" class="help-text">
+                <p>
+                    If your contribution is approved, your reputation will grow and you can potentially become a maintainer.
+                    But if you aren't interested in becoming a maintainer, You can leave this field blank.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <input autocomplete="off" placeholder="Title" type="text" value="{{ benefit.title }}" id="title" required>
+            <div id="error-title" class="errors"></div>
+        </div>
+        <div class="form-group">
+            <h3>Description</h3>
+            <textarea id="description" autocomplete="off" required rows="5" cols="30">{{ benefit.description }}</textarea>
+            <div id="error-description" class="errors"></div>
+        </div>
+        <div class="form-group">
+           <h3>Highlights <span class="help highlights">?</span></h3>
+                <div id="error-highlights" class="errors"></div>
+                <div class="help-text" id="help-highlights">
+                    <p>
+                        Highlights are the most important points, Eg: Percentage of Discount, Attractive Benefits etc.
+                    </p>
+                </div>
+                <ul id="highlights">
+                    {% if benefit %}
+                        {% for highlight in benefit.highlights %}
+                            <li class="highlight-wrap">
+                                <input autocomplete="off" placeholder="Highlight" type="text" value="{{ highlight }}" class="highlight">{% if forloop.counter0 > 0 %}<span class="delete-highlight">&#x2715;</span>{% endif %}
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="highlight-wrap"><input autocomplete="off" placeholder="Highlight" type="text" class="highlight"></li>
+                    {% endif %}
+                </ul>
+                <button class="btn btn-sm btn-red" id="new-highlight">New Highlight</button>
+        </div>
+        <div class="form-group">
+            <select id="category" autocomplete="off"  >
+                <option selected value="">No Category</option>
+                {% for category in categories %}
+                    {% ifequal category.id benefit.category.id%}
+                        <option value="{{ category.id }}" selected>{{ category.name }}</option>
+                    {% else %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endifequal %}
+                {% endfor %}
+            </select>
+            <div id="error-category" class="errors"></div>
+        </div>
+        <div class="form-group">
+            <input autocomplete="off" placeholder="Link" value="{{ benefit.link }}" type="text" id="link" required>
+            <div id="error-link" class="errors"></div>
+        </div>
+        <div class="form-group">
+            <input autocomplete="off" placeholder="Image Link" value="{{ benefit.img_file }}" type="text" id="img_file">
+            <div id="error-img_file" class="errors"></div>
+        </div>
+        <button class="btn btn-light" id="submit">Submit</button>
+
+    </div>
+{% endblock %}

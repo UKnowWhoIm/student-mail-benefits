@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block additional_head %}
+        <style>
+            .helptext{
+                display: none;
+            }
+            body{;
+                padding: 10px;
+            }
+            input{
+                margin: 10px 10px;
+            }
+        </style>
+{% endblock %}
+{% block title %}Create User{% endblock %}
+{% block body %}
+    <h2>Become a maintainer</h2>
+    <form method="post" action="{%url 'create_user'%}">
+        <div><label for="email">Email Address</label>: <input type="text" value="{{ email }}" disabled/><br/></div>
+        {{ form }}
+        {% csrf_token %}
+        <input type="hidden" value="{{ token }}" name="token"/>
+        <br/><button type="submit" class="btn btn-light">Submit</button>
+    </form>
+{% endblock %}

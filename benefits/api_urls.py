@@ -1,5 +1,4 @@
-from django.urls import path, include
-from .views import BenefitView, CategoryViewSet
+from .api_views import BenefitView, CategoryViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()

@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Edit a benefit{% endblock %}
+{% block additional_head %}
+    <style>
+        #error{
+            color: #dc3545;
+            font-weight: bold;
+        }
+        #search-row{
+            text-align: center;
+        }
+        #search-row input{
+            padding: 10px;
+            margin: 10px;
+        }
+        .result{
+            display: inline-block;
+            margin: 10px;
+            padding: 5px;
+            width: 256px;
+            color: #212529;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+
+        #result-wrapper{
+            text-align: center;
+        }
+
+        #search-btn img{
+            width: 32px;
+            height: 32px;
+        }
+
+        #search-btn{
+            display: inline-block;
+            vertical-align: middle;
+            cursor: pointer;
+        }
+
+        .result img{
+            width: 256px;
+            height: 256px;
+        }
+        .result-title-row{
+            display: flex;
+            flex-direction: row;
+            padding: 10px 0;
+            justify-content: space-between;
+        }
+    </style>
+    <script
+          src="https://code.jquery.com/jquery-3.6.0.min.js"
+          integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+          crossorigin="anonymous"></script>
+    <script>
+        const errorDOM = "<div id=\"error\">No search results found</div>";
+
+        function getEditBtn(id){
+            let btn = document.createElement("button");
+            $(btn)
+                .html("Edit")
+                .addClass("btn")
+                .addClass("btn-red")
+                .addClass("btn-sm")
+                .addClass("edit")
+                .attr("id", id);
+
+            return btn
+        }
+
+        function getResultDOM(result){
+            let wrapper = document.createElement("div");
+            $(wrapper).addClass("result");
+            let image = document.createElement("img");
+            $(image).attr("src", result.img_file);
+            $(image).attr("alt", "Image Unavailable");
+            $(wrapper).append(image);
+
+            let title = document.createElement("div");
+            $(title)
+                .html(result.title)
+                .addClass("result-title-row")
+                .appendTo(wrapper);
+
+            $(title).append(getEditBtn(result.id));
+
+            return wrapper;
+        }
+
+        function attachSearchResults(resultObj){
+            let resultDOM = $("#results");
+            resultDOM.html("");
+            if(resultObj.length === 0)
+                resultDOM.html(errorDOM);
+            else
+                resultObj.forEach((result) => resultDOM.append(getResultDOM(result)));
+        }
+
+        $(document).ready(function (){
+            $("#id").keyup(function (){
+                $.ajax({
+                    url: "/api/benefits/"+$(this).val()+"/",
+                    success: (response) => {attachSearchResults([response])},
+                    error: (_) => attachSearchResults([])
+                });
+            });
+
+            $("#search-btn").click(function (){
+                $.ajax({
+                    url: "/api/benefits/?search="+$("#title").val(),
+                    success: (response) => attachSearchResults(response)
+                });
+            });
+
+            $("#results").delegate(".edit", "click", function (){
+                location.href = "/benefits/edit/" + $(this).attr("id");
+            });
+        });
+    </script>
+{% endblock %}
+{% block body %}
+    <div id="main-content">
+        <h1>Edit a benefit</h1>
+        <div id="search-row">
+            <input type="text" id="id" placeholder="Enter Benefit ID">
+            Or
+            <input type="text" id="title" placeholder="Enter Benefit Title">
+            <div id="search-btn">
+                <img src="{% static "search.png" %}"/>
+            </div>
+        </div>
+        <div id="result-wrapper">
+            <h2>Results</h2>
+            <div id="results"></div>
+        </div>
+    </div>
+{% endblock %}

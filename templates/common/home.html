@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Welcome to Student Benefits API{% endblock %}
+{% block additional_head %}
+    <style>
+        h1{
+            font-size: 64px;
+            text-align: center;
+        }
+        #main-content{
+            padding: 2rem;
+        }
+        #sub-content{
+            margin-top: 3rem;
+            font-size: 28px
+        }
+
+        #buttons{
+            margin-top: 2rem;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    {% include "topbar.html" %}
+    <div id="main-content">
+        <h1>Welcome to Student Benefits API</h1>
+        <div id="sub-content">
+            <p>Most of the student community is unaware of the tremendous amount of discounts/free stuff they're eligible to receive</p>
+            <p>This OpenSource API contains the many benefits offered by companies varying from JetBrains, Heroku to Spotify, Youtube etc.</p>
+            <div id="buttons">
+                <button type="button" onclick="window.location='/api/benefits/'" class="btn btn-red">Browse API</button>
+                <button type="button" onclick="window.location='/benefits/new'" class="btn btn-light">Add a new benefit</button>
+                <button type="button" onclick="window.location='/benefits/edit'" class="btn btn-light">Edit a benefit</button>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
