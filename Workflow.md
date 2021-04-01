@@ -31,3 +31,15 @@ If a Contribution is made by maintainers, it will be approved automatically
 - If it surpasses the threshold, the email will be placed in the MailLists table
 - A regular routine sends the unsent emails in MailList every day
 - On clicking the link received in the email, the user can enter a password and become a maintainer.
+
+
+### Management Commands
+
+#### `create_group`
+
+Run once to create the maintainer group to set up permissions for maintainers.
+
+#### `execute_routine`
+
+- Run periodically to send pending invites, delete old invites and contributions.
+- Arguments: `--no-email`, `-- no-invites`, `--no-contributions`
