@@ -5,6 +5,9 @@ An Open API containing all information regarding student licenses for popular pr
 ## Table Of Contents
 - [Using the API](#using-the-api)
   - [Routes](#routes)
+- [Becoming a maintainer](#becoming-a-maintainer)
+- [Workflow](Workflow.md)
+
 
 ### Using the API
 
@@ -12,11 +15,12 @@ An Open API containing all information regarding student licenses for popular pr
 
 | Route | Method | Function |
 | ----- | ----- | ----- |
-| /benefits/ | GET |  [Get All Benefits](#get-all-benefits) |
-| /benefits/ | POST | [Create a benefit](#create-a-benefit) |
-| /benefits/&lt;PK&gt;/ | GET | [Fetch Benefit By PK](#fetch-benefit-by-pk) |
-| /category/ | GET | [Get all categories](#get-all-categories) |
-| /category/&lt;PK&gt; | GET | [Fetch Category by PK](#fetch-category-by-pk) |
+| /api/benefits/ | GET |  [Get All Benefits](#get-all-benefits) |
+| /api/benefits/ | POST | [Suggest a new benefit](#suggest-a-new-benefit) |
+| /api/benefits/&lt;PK&gt; | GET | [Fetch Benefit By PK](#fetch-benefit-by-pk) |
+| /api/benefits/&lt;PK&gt;/ | PUT | [Suggest changes for benefit](#suggest-edits-to-a-benefit) |
+| /api/category/ | GET | [Get all categories](#get-all-categories) |
+| /api/category/&lt;PK&gt; | GET | [Fetch Category by PK](#fetch-category-by-pk) |
 
 ### Benefit Data
 
@@ -33,16 +37,17 @@ An Open API containing all information regarding student licenses for popular pr
 
 ### Get All Benefits
 
-Get all the verified benefits stored in this API.<br/>
+Get all the verified benefits stored in this API.
+
 To filter by category, pass category=&lt;category_id&gt; as a GET parameter
+
+To search by title, pass search=&lt;title&gt; as a GET parameter
 
 ### Fetch Benefit By PK
 
 Get details of Benefit by PK
 
-### Create a Benefit
-
-Contribute to this collection by adding an unlisted benefit
+### Benefit Format
 
 | Arguments | Type | Required |
 | ----- | ----- | ----- | 
@@ -52,9 +57,31 @@ Contribute to this collection by adding an unlisted benefit
 | category | Integer | No |
 | img_link | String | No |
 | highlights | JSON String | No |
+| email | String | No |
 
-**NOTE**: Your contribution will be listed only after verification by community members.
+**NOTE**: If email is provided, and the contribution is accepted, the user can potentially become a maintainer.
 
+
+### Suggest a new benefit
+
+Contribute to this collection by adding an unlisted benefit.
+
+For a frontend form visit `/benefits/new`
+
+Your contribution will be listed only after verification by community members.
+
+All contributions without approval for a week are automatically deleted
+
+
+### Suggest edits to a benefit
+
+Found something wrong? Improve it by suggesting changes.
+
+For a frontend form visit `/benefits/edit`
+
+Your changes would only be made public after verification by community members.
+
+All contributions without approval for a week are automatically deleted
 ### Get all Categories
 
 Get all the categories.
@@ -63,3 +90,10 @@ Get all the categories.
 
 Fetch a category by it's PK
 
+### Becoming a maintainer
+
+If you regularly contribute to this API, you will have the chance to become a maintainer.
+
+As a maintainer,
+  - All your new changes will instantly be approved
+  - You'll get a chance to review changes from the community

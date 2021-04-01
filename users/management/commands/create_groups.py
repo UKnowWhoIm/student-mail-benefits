@@ -5,7 +5,7 @@ from django.core.management import BaseCommand
 
 GROUPS = {
     "maintainer": {
-        "benefit": ["view", "add", "change"],
+        "benefit": ["view"],
         "category": ["view", "add"],
         "contribution": ["view", "add", "change"],
     }
